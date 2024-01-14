@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "6a251330-7ee7-40db-8a08-4df4da4895fe",
+		"name": "GraphQlCities",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19398434"
+	},
+	"item": [
+		{
+			"name": "GetAllAbstractCities",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.test(\"should respond with correct body\", function () {   ",
+							"    console.log(jsonData)",
+							"    pm.expect(jsonData).to.have.property('data');",
+							"    pm.expect(jsonData.data).to.have.property('getAllCities');",
+							"    pm.expect(jsonData.data.getAllCities).to.have.length.above(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query{\r\ngetAllCities{\r\n    id\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://graphql-ukrainian-cities.hillel.it/graphql",
+					"protocol": "https",
+					"host": [
+						"graphql-ukrainian-cities",
+						"hillel",
+						"it"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCityDescriptionById23",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.test(\"should respond with correct body\", function () {   ",
+							"    console.log(jsonData)",
+							"    pm.expect(jsonData).to.have.property('data');",
+							"    pm.expect(jsonData.data).to.have.property('city1');",
+							"    pm.expect(jsonData.data.city1).to.have.length.above(0);",
+							"",
+							"    pm.expect(jsonData.data).to.have.property('city2');",
+							"    pm.expect(jsonData.data.city2).to.have.length.above(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query{\r\n  city1: getCityDescription(id:23)\r\n  city2: getCityDescription(id:10)\r\n  city3: getCityDescription(id:5)\r\n  city4: getCityDescription(id:2)\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://graphql-ukrainian-cities.hillel.it/graphql",
+					"protocol": "https",
+					"host": [
+						"graphql-ukrainian-cities",
+						"hillel",
+						"it"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCityByRangeId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.test(\"should respond with correct body\", function () {   ",
+							"    console.log(jsonData)",
+							"    pm.expect(jsonData).to.have.property('data');",
+							"    pm.expect(jsonData.data).to.have.property('getCityByRangeId');",
+							"    pm.expect(jsonData.data.getCityByRangeId).to.be.a('array');",
+							"    pm.expect(jsonData.data.getCityByRangeId).to.have.length.above(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query{\r\n  getCityByRangeId(filter:{minId:1, maxId:25}){\r\n    id\r\n    name\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://graphql-ukrainian-cities.hillel.it/graphql",
+					"protocol": "https",
+					"host": [
+						"graphql-ukrainian-cities",
+						"hillel",
+						"it"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addCity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({",
+							"    url: 'https://graphql-ukrainian-cities.hillel.it/graphql',",
+							"    method: 'POST',",
+							"     header: {",
+							"   'content-type': 'application/json'},",
+							"    body: JSON.stringify({",
+							"    query: `query{",
+							"  getAllCities{",
+							"    id",
+							"    name",
+							"    square",
+							"    ... on City{",
+							"        description",
+							"    }",
+							"  }",
+							"}`",
+							"  })",
+							"    },",
+							"    function (err, res) {",
+							"        let avgSqm,sumSqm = 0;",
+							"        console.log(res.json().data.getAllCities);",
+							"        res.json().data.getAllCities.forEach((x) => {",
+							"            sumSqm += x.square;",
+							"        });",
+							"        avgSqm = sumSqm / res.json().data.getAllCities.length;",
+							"        pm.variables.set('avgSQM', avgSqm);",
+							"        console.log(pm.variables.get('avgSQM'))",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation($nn: String! = \"df\", $avgSQM: Float! = 0){\r\n  addCity(name:$nn,square: $avgSQM,description:\"Good city without war\"){\r\n    id\r\n    name\r\n    square\r\n    ... on City{\r\n      description\r\n    }\r\n  }\r\n}",
+						"variables": "{\n    \"nn\": \"NameTest\",\n    \"avgSQM\": {{avgSQM}}\n}"
+					}
+				},
+				"url": {
+					"raw": "https://graphql-ukrainian-cities.hillel.it/graphql",
+					"protocol": "https",
+					"host": [
+						"graphql-ukrainian-cities",
+						"hillel",
+						"it"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
